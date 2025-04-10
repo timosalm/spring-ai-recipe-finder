@@ -3,6 +3,8 @@
 Demo on how easy it is to build AI-driven applications with Spring Boot and Spring AI. 
 It also shows how to implement advanced techniques for the adaption of foundation models with Function Calling and RAG.
 
+***Note: A Spring AI Recipe Finder implementation using the Model Context Protocol is available [here](https://github.com/timosalm/spring-ai-recipe-finder-mcp).***
+
 ![](docs/images/ui-sample.png)
 
 [Slides: Building AI-Driven Spring Applications with Spring AI](docs/slides.pdf)
