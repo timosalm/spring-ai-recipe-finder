@@ -29,7 +29,7 @@ spec:
                 name: recipe-finder-azure-openai
           - name: SPRING_DATA_REDIS_HOST
             value: recipe-finder-redis
-          image: ghcr.io/timosalm/spring-ai:recipe-finder
+          image: ghcr.io/timosalm/spring-ai-recipe-finder:recipe-finder
           imagePullPolicy: Always
           name: workload
 ---

@@ -23,7 +23,7 @@ spec:
               value: "*"
             - name: MANAGEMENT_ENDPOINT_ENV_SHOW_VALUES
               value: ALWAYS
-          image: ghcr.io/timosalm/spring-ai:recipe-finder
+          image: ghcr.io/timosalm/spring-ai-recipe-finder:recipe-finder
           imagePullPolicy: Always
           name: workload
 ---
