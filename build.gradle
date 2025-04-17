@@ -15,7 +15,6 @@ java {
 
 repositories {
 	mavenCentral()
-	maven { url 'https://repo.spring.io/milestone' }
 }
 
 ext {
@@ -27,6 +26,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 
+	implementation platform("org.springframework.ai:spring-ai-bom:${springAiVersion}")
 	implementation 'org.springframework.ai:spring-ai-ollama-spring-boot-starter'
 	implementation 'org.springframework.ai:spring-ai-openai-spring-boot-starter'
 	implementation 'org.springframework.ai:spring-ai-azure-openai-spring-boot-starter'
@@ -36,19 +36,13 @@ dependencies {
 
 	implementation 'org.springframework.ai:spring-ai-pdf-document-reader'
 
-	implementation "org.springframework.ai:spring-ai-spring-boot-docker-compose:${springAiVersion}"
+	implementation "org.springframework.ai:spring-ai-spring-boot-docker-compose"
 	implementation 'org.springframework.boot:spring-boot-docker-compose'
 
 	implementation 'org.apache.commons:commons-lang3'
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-}
-
-dependencyManagement {
-	imports {
-		mavenBom "org.springframework.ai:spring-ai-bom:${springAiVersion}"
-	}
 }
 
 tasks.named('test') {

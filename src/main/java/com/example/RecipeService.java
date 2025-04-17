@@ -4,10 +4,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.QuestionAnswerAdvisor;
+import org.springframework.ai.chat.client.advisor.SimpleLoggerAdvisor;
 import org.springframework.ai.chat.prompt.PromptTemplate;
 import org.springframework.ai.image.ImageModel;
 import org.springframework.ai.image.ImagePrompt;
-import org.springframework.ai.model.function.FunctionCallback;
 import org.springframework.ai.reader.pdf.PagePdfDocumentReader;
 import org.springframework.ai.reader.pdf.config.PdfDocumentReaderConfig;
 import org.springframework.ai.tool.annotation.Tool;
@@ -141,7 +141,7 @@ public class RecipeService {
         return chatClient.prompt()
                 .user(promptTemplate.render())
                 .tools(this)
-                .advisors(new QuestionAnswerAdvisor(vectorStore, advisorSearchRequest, advise))
+                .advisors(new QuestionAnswerAdvisor(vectorStore, advisorSearchRequest, advise), new SimpleLoggerAdvisor())
                 .call()
                 .entity(Recipe.class);
     }

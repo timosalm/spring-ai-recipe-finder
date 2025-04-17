@@ -22,3 +22,4 @@ spring.data.redis:
 app:
   always-available-ingredients: wine,salt,pepper,olive oil,broth,rice
   available-ingredients-in-fridge: bacon,onions
+logging.level.org.springframework.ai.chat.client.advisor: DEBUG
