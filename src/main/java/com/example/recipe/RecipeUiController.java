@@ -1,4 +1,4 @@
-package com.example;
+package com.example.recipe;
 
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.slf4j.Logger;
@@ -19,7 +19,7 @@ import static org.springframework.util.StringUtils.capitalize;
 
 @Controller
 @RequestMapping("/")
-public class RecipeUiController {
+class RecipeUiController {
 
     private static final Logger log = LoggerFactory.getLogger(RecipeUiController.class);
 
@@ -27,14 +27,14 @@ public class RecipeUiController {
     private final ChatModel chatModel;
     private final Optional<ImageModel> imageModel;
 
-    public RecipeUiController(RecipeService recipeService, ChatModel chatModel, Optional<ImageModel> imageModel) {
+    RecipeUiController(RecipeService recipeService, ChatModel chatModel, Optional<ImageModel> imageModel) {
         this.recipeService = recipeService;
         this.chatModel = chatModel;
         this.imageModel = imageModel;
     }
 
     @GetMapping
-    public String fetchUI(Model model) {
+    String fetchUI(Model model) {
         var aiModelNames = getAiModelNames();
         model.addAttribute("aiModel", String.join(" & ", aiModelNames));
         if (!model.containsAttribute("fetchRecipeData")) {
@@ -44,7 +44,7 @@ public class RecipeUiController {
     }
 
     @PostMapping
-    public String fetchRecipeUiFor(FetchRecipeData fetchRecipeData, Model model) throws Exception {
+    String fetchRecipeUiFor(FetchRecipeData fetchRecipeData, Model model) throws Exception {
         Recipe recipe;
         try {
             recipe = recipeService.fetchRecipeFor(fetchRecipeData.ingredients(), fetchRecipeData.isPreferAvailableIngredients(), fetchRecipeData.isPreferOwnRecipes());

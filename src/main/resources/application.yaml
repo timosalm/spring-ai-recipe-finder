@@ -1,9 +1,14 @@
 spring:
   application.name: RecipeFinder
-  autoconfigure.exclude: |
-    org.springframework.ai.autoconfigure.openai.OpenAiAutoConfiguration,
-    org.springframework.ai.autoconfigure.azure.openai.AzureOpenAiAutoConfiguration
   ai:
+    model:
+      chat: ollama
+      embedding: ollama
+      image: none
+      audio:
+        speech: none
+        transcription: none
+      moderation: none
     ollama:
       chat:
         model: llama3.2
@@ -16,10 +21,9 @@ spring:
 server.tomcat.max-swallow-size: -1
 spring.data.redis:
   host: localhost
-  port: 232
+  port: 6379
   username:
   password:
 app:
-  always-available-ingredients: wine,salt,pepper,olive oil,broth,rice
   available-ingredients-in-fridge: bacon,onions
 logging.level.org.springframework.ai.chat.client.advisor: DEBUG

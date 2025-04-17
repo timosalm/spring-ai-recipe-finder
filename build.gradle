@@ -18,7 +18,7 @@ repositories {
 }
 
 ext {
-	set('springAiVersion', "1.0.0-M6")
+	set('springAiVersion', "1.0.0-M7")
 }
 
 dependencies {
@@ -26,23 +26,27 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 
-	implementation platform("org.springframework.ai:spring-ai-bom:${springAiVersion}")
-	implementation 'org.springframework.ai:spring-ai-ollama-spring-boot-starter'
-	implementation 'org.springframework.ai:spring-ai-openai-spring-boot-starter'
-	implementation 'org.springframework.ai:spring-ai-azure-openai-spring-boot-starter'
+	implementation 'org.springframework.ai:spring-ai-starter-model-ollama'
+	implementation 'org.springframework.ai:spring-ai-starter-model-openai'
+	implementation 'org.springframework.ai:spring-ai-starter-model-azure-openai'
 
-	implementation 'org.springframework.ai:spring-ai-transformers-spring-boot-starter'
-	implementation 'org.springframework.ai:spring-ai-redis-store-spring-boot-starter'
-
+	implementation 'org.springframework.ai:spring-ai-advisors-vector-store'
+	implementation 'org.springframework.ai:spring-ai-starter-vector-store-redis'
 	implementation 'org.springframework.ai:spring-ai-pdf-document-reader'
-
-	implementation "org.springframework.ai:spring-ai-spring-boot-docker-compose"
-	implementation 'org.springframework.boot:spring-boot-docker-compose'
 
 	implementation 'org.apache.commons:commons-lang3'
 
+	developmentOnly 'org.springframework.boot:spring-boot-docker-compose'
+	developmentOnly 'org.springframework.ai:spring-ai-spring-boot-docker-compose'
+
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+dependencyManagement {
+	imports {
+		mavenBom "org.springframework.ai:spring-ai-bom:${springAiVersion}"
+	}
 }
 
 tasks.named('test') {

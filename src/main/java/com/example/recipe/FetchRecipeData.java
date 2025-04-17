@@ -1,9 +1,9 @@
-package com.example;
+package com.example.recipe;
 
 import java.util.Arrays;
 import java.util.List;
 
-public class FetchRecipeData {
+class FetchRecipeData {
 
     private String ingredientsStr;
     private boolean preferAvailableIngredients = false;

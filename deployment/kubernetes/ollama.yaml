@@ -65,7 +65,7 @@ spec:
             - |
               set -ex
               sleep 10
-              ollama run llama3.1
+              ollama run llama3.2
               sleep infinity
 ---
 apiVersion: v1

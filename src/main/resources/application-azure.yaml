@@ -1,14 +1,16 @@
 spring:
-  autoconfigure.exclude: |
-    org.springframework.ai.autoconfigure.openai.OpenAiAutoConfiguration,
-    org.springframework.ai.autoconfigure.ollama.OllamaAutoConfiguration
-  ai.azure.openai:
-    chat:
-      options.temperature: 1.0
-      options:
-        deployment-name: gpt-4o
-    image.options:
-      deployment-name: dall-e-3
-      model: dall-e-3
-    api-key:
-    endpoint: https://{your-resource-name}.openai.azure.com
+  ai:
+    model:
+      chat: azure-openai
+      embedding: azure-openai
+      image: azure-openai
+    azure.openai:
+      chat:
+        options.temperature: 1.0
+        options:
+          deployment-name: gpt-4o
+      image.options:
+        deployment-name: dall-e-3
+        model: dall-e-3
+      api-key:
+      endpoint: https://{your-resource-name}.openai.azure.com

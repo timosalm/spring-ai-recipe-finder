@@ -1,10 +1,10 @@
-package com.example;
+package com.example.recipe;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.chat.client.ChatClient;
-import org.springframework.ai.chat.client.advisor.QuestionAnswerAdvisor;
 import org.springframework.ai.chat.client.advisor.SimpleLoggerAdvisor;
+import org.springframework.ai.chat.client.advisor.vectorstore.QuestionAnswerAdvisor;
 import org.springframework.ai.chat.prompt.PromptTemplate;
 import org.springframework.ai.image.ImageModel;
 import org.springframework.ai.image.ImagePrompt;
@@ -24,7 +24,7 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 @Service
-public class RecipeService {
+class RecipeService {
 
     private static final Logger log = LoggerFactory.getLogger(RecipeService.class);
 
@@ -44,19 +44,16 @@ public class RecipeService {
     @Value("classpath:/prompts/image-for-recipe")
     private Resource imageForRecipePromptResource;
 
-    @Value("${app.always-available-ingredients}")
-    private List<String> alwaysAvailableIngredients;
-
     @Value("${app.available-ingredients-in-fridge}")
     private List<String> availableIngredientsInFridge;
 
-    public RecipeService(ChatClient chatClient, Optional<ImageModel> imageModel, VectorStore vectorStore) {
+    RecipeService(ChatClient chatClient, Optional<ImageModel> imageModel, VectorStore vectorStore) {
         this.chatClient = chatClient;
         this.imageModel = imageModel;
         this.vectorStore = vectorStore;
     }
 
-    public void addRecipeDocumentForRag(Resource pdfResource, int pageTopMargin, int pageBottomMargin) {
+    void addRecipeDocumentForRag(Resource pdfResource, int pageTopMargin, int pageBottomMargin) {
         log.info("Add recipe document {} for rag", pdfResource.getFilename());
         var documentReaderConfig = PdfDocumentReaderConfig.builder()
                 .withPageTopMargin(pageTopMargin)
@@ -67,7 +64,7 @@ public class RecipeService {
         vectorStore.accept(documents);
     }
 
-    public Recipe fetchRecipeFor(List<String> ingredients, boolean preferAvailableIngredients, boolean preferOwnRecipes) {
+    Recipe fetchRecipeFor(List<String> ingredients, boolean preferAvailableIngredients, boolean preferOwnRecipes) {
         Recipe recipe;
         if (!preferAvailableIngredients && !preferOwnRecipes) {
             recipe = fetchRecipeFor(ingredients);
@@ -112,9 +109,9 @@ public class RecipeService {
     }
 
     @Tool(description = "Fetches ingredients that are available at home")
-    public List<String> fetchIngredientsAvailableAtHome() {
+    List<String> fetchIngredientsAvailableAtHome() {
         log.info("Fetching ingredients available at home function called by LLM");
-        return Stream.concat(availableIngredientsInFridge.stream(), alwaysAvailableIngredients.stream()).toList();
+        return availableIngredientsInFridge;
     }
 
     private Recipe fetchRecipeWithRagFor(List<String> ingredients) {

@@ -55,22 +55,22 @@ export SPRING_PROFILES_ACTIVE=azure
 ```
 
 ### Vector DB
-On your local machine, a Redis database is automatically started and configured with docker compose.
+On your local machine, a Redis database is automatically started and configured with docker compose. On your local machine, a Redis database is automatically started and configured with Docker Compose for the favorite-recipes-server. As a fallback if no Redis database is configured, a SimpleVectorStore instance will be used.
 
 # Running the application locally
 ```
 ./gradlew bootRun
 ```
 Open [http://localhost:8080](http://localhost:8080) in your browser. 
-Enter the ingredients (e.g. "Potatoes") you want to find a recipe for in the form and press the "find" button.
+Enter the ingredients (e.g. "Cheese") you want to find a recipe for in the form and press the "find" button.
 
 ## Function Calling 
 By checking the "Prefer available ingredients" checkbox, [Function Calling](https://docs.spring.io/spring-ai/reference/1.0/concepts.html#_function_calling) will be enabled.
-As the functionalities to add always available ingredients and for the API call to check the available ingredients in the fridge are not yet implemented, they can be configured via the
-`app.always-available-ingredients` and `app.available-ingredients-in-fridge` properties in [application.yaml](src/main/resources/application.yaml).
+As the functionality the API call to check the available ingredients in the fridge are not yet implemented, they can be configured via the
+`app.available-ingredients-in-fridge` property in [application.yaml](src/main/resources/application.yaml).
 
 Bacon and onions are currently configured for available ingredients in fridge.
-With the input "Potatoes", you should get a recipe with potatoes and bacon.
+With the input "Cheese", you should get a recipe with cheese and bacon.
 ![](docs/images/ui-sample-function-calling.png)
 
 ## Retrieval-Augmented Generation(RAG)
@@ -80,7 +80,7 @@ To upload your own PDF documents for recipes to the vector database, there is a 
 ```
 curl -XPOST -F "file=@$PWD/german_recipes.pdf" -F "pageBottomMargin=50" http://localhost:8080/api/v1/recipes/upload
 ```
-The sample recipe part of this repository is a potato soup. With the input "Potatoes", you should get a recipe that goes in the direction of a potato soup.
+Based on the sample recipes part of this repository, with the input "Cheese", you should get a recipe that goes in the direction of a cheese spaetzle muffin.
 ![](docs/images/ui-sample-rag.png)
 
 # Kubernetes Deployment
