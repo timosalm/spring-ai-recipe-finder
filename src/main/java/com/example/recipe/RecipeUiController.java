@@ -4,6 +4,7 @@ import org.apache.commons.lang3.reflect.FieldUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.chat.model.ChatModel;
+import org.springframework.ai.chat.prompt.ChatOptions;
 import org.springframework.ai.image.ImageModel;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,12 +26,14 @@ class RecipeUiController {
 
     private final RecipeService recipeService;
     private final ChatModel chatModel;
+    private final Optional<ChatOptions> chatOptions;
     private final Optional<ImageModel> imageModel;
 
-    RecipeUiController(RecipeService recipeService, ChatModel chatModel, Optional<ImageModel> imageModel) {
+    RecipeUiController(RecipeService recipeService, ChatModel chatModel, Optional<ChatOptions> chatOptions, Optional<ImageModel> imageModel) {
         this.recipeService = recipeService;
         this.chatModel = chatModel;
-        this.imageModel = imageModel;
+		this.chatOptions = chatOptions;
+		this.imageModel = imageModel;
     }
 
     @GetMapping
@@ -60,15 +63,18 @@ class RecipeUiController {
     private List<String> getAiModelNames() {
         var modelNames = new ArrayList<String>();
         var chatModelProvider = chatModel.getClass().getSimpleName().replace("ChatModel", "");
-        var chatModelDefaultOptions = chatModel.getDefaultOptions();
-        try {
-            var modelName = (String)FieldUtils.readField(chatModelDefaultOptions, "model", true);
-            modelNames.add("%s (%s)".formatted(chatModelProvider, capitalize(modelName)));
-        } catch (Exception e1) {
+        if (chatOptions.isPresent()) {
+            if (chatOptions.get().getModel() == null) {
+                modelNames.add(chatModelProvider);
+            } else {
+                modelNames.add("%s (%s)".formatted(chatModelProvider, capitalize(chatOptions.get().getModel())));
+            }
+        } else {
+            var chatModelDefaultOptions = chatModel.getDefaultOptions();
             try {
-                var modelName = (String)FieldUtils.readField(chatModelDefaultOptions, "deploymentName", true);
+                var modelName = (String)FieldUtils.readField(chatModelDefaultOptions, "model", true);
                 modelNames.add("%s (%s)".formatted(chatModelProvider, capitalize(modelName)));
-            } catch (Exception e2) {
+            } catch (Exception e1) {
                 modelNames.add(chatModelProvider);
             }
         }

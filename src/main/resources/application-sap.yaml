@@ -1,0 +1,11 @@
+spring:
+  ai:
+    # Define AI provider(s) for type of models for autoconfiguration
+    model:
+      chat: none
+      embedding: none
+    # AI provider configuration
+    openai:
+      chat:
+        options:
+          temperature: 1.0

@@ -19,6 +19,7 @@ repositories {
 
 ext {
 	set('springAiVersion', "1.0.1")
+	set('sapAiSdkVersion', "1.10.0")
 }
 
 dependencies {
@@ -27,8 +28,10 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 
 	implementation 'org.springframework.ai:spring-ai-starter-model-ollama'
+
+	implementation "com.sap.ai.sdk:orchestration:${sapAiSdkVersion}"
+	implementation "com.sap.ai.sdk.foundationmodels:openai:${sapAiSdkVersion}"
 	implementation 'org.springframework.ai:spring-ai-starter-model-openai'
-	implementation 'org.springframework.ai:spring-ai-starter-model-azure-openai'
 
 	implementation 'org.springframework.ai:spring-ai-advisors-vector-store'
 	implementation 'org.springframework.ai:spring-ai-starter-vector-store-redis'
