@@ -41,6 +41,9 @@ dependencies {
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+	// Fix Netty macOS DNS native library loading on macOS with Apple Silicon
+	runtimeOnly 'io.netty:netty-resolver-dns-native-macos:4.1.114.Final:osx-aarch_64'
 }
 
 dependencyManagement {

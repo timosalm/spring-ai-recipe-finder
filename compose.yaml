@@ -1,6 +1,7 @@
 services:
   redis:
-    image: "redis/redis-stack-server"
+    image: redis/redis-stack:7.4.0-v1
+    container_name: redis
     ports:
       - "6379:6379"
   ollama:

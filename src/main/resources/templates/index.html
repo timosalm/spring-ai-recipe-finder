@@ -37,7 +37,7 @@
                         <li th:each="instruction : ${recipe.instructions}" th:text="${instruction}">Instruction</li>
                     </ul>
                 </div>
-                <img th:src="${#strings.isEmpty(recipe.imageUrl) or #strings.contains(recipe.imageUrl, 'example') ? 'placeholder.png' : recipe.imageUrl}" id="recipe-img" alt="Recipe Image" class="image"/>
+                <img th:src="${recipe.imageUrl != null and !#strings.isEmpty(recipe.imageUrl) and !#strings.contains(recipe.imageUrl, 'example') ? recipe.imageUrl : 'placeholder.png'}" id="recipe-img" alt="Recipe Image" class="image"/>
             </div>
         </div>
     </div>

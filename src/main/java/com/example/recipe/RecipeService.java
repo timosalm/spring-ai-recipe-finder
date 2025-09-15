@@ -86,7 +86,9 @@ class RecipeService {
                     .build();
             var imagePrompt = new ImagePrompt(imagePromptTemplate.render());
             var imageGeneration = imageModel.get().call(imagePrompt).getResult();
-            return new Recipe(recipe, imageGeneration.getOutput().getUrl());
+            var base64Data = imageGeneration.getOutput().getB64Json();
+            var dataUri = "data:image/png;base64," + base64Data;
+            return new Recipe(recipe, dataUri);
         }
         return recipe;
     }

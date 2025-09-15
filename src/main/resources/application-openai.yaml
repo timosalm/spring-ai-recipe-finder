@@ -15,4 +15,5 @@ spring:
         model: dall-e-3
         size: 1024x1024
         style: natural
-      api-key:
+        response-format: b64_json
+      api-key: ${SPRING_AI_OPENAI_API_KEY}
