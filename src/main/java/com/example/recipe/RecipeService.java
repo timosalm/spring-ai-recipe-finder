@@ -3,6 +3,7 @@ package com.example.recipe;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.client.advisor.SafeGuardAdvisor;
 import org.springframework.ai.chat.client.advisor.vectorstore.QuestionAnswerAdvisor;
 import org.springframework.ai.chat.prompt.PromptTemplate;
 import org.springframework.ai.image.ImageModel;
@@ -10,6 +11,7 @@ import org.springframework.ai.image.ImagePrompt;
 import org.springframework.ai.reader.pdf.PagePdfDocumentReader;
 import org.springframework.ai.reader.pdf.config.PdfDocumentReaderConfig;
 import org.springframework.ai.tool.annotation.Tool;
+import org.springframework.ai.tool.annotation.ToolParam;
 import org.springframework.ai.transformer.splitter.TokenTextSplitter;
 import org.springframework.ai.vectorstore.SearchRequest;
 import org.springframework.ai.vectorstore.VectorStore;
@@ -130,6 +132,7 @@ class RecipeService {
         var ragSearchRequest = SearchRequest.builder().topK(2).similarityThreshold(0.7).build();
         var ragAdvisor = QuestionAnswerAdvisor.builder(vectorStore).searchRequest(ragSearchRequest).promptTemplate(ragPromptTemplate).build();
 
+        var safeGuardAdvisor = new SafeGuardAdvisor(List.of("dump"));
          return chatClient.prompt()
                  .user(us -> us
                         .text(recipeForAvailableIngredientsPromptResource)
