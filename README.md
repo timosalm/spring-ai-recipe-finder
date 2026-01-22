@@ -92,12 +92,12 @@ kubectl apply -f deployment/kubernetes/ollama.yaml
 
 ## OpenAI
 ```
-export SPRING_AI_AZURE_OPENAI_API_KEY=<INSERT KEY HERE>
-export SPRING_AI_AZURE_OPENAI_ENDPOINT=<INSERT ENDPOINT URL HERE>
+export SPRING_AI_OPENAI_API_KEY=<INSERT KEY HERE>
 envsubst < deployment/kubernetes/openai.yaml | kubectl apply -f -
 ```
 ## Azure OpenAI
 ```
-export SPRING_AI_OPENAI_API_KEY=<INSERT KEY HERE>
+export SPRING_AI_AZURE_OPENAI_API_KEY=<INSERT KEY HERE>
+export SPRING_AI_AZURE_OPENAI_ENDPOINT=<INSERT ENDPOINT URL HERE>
 envsubst < deployment/kubernetes/azure-openai.yaml | kubectl apply -f -
 ```
