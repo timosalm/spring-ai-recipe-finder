@@ -11,6 +11,24 @@ It also shows how to implement advanced techniques for the adaption of foundatio
 
 [Slides: Building AI-Driven Spring Applications with Spring AI](docs/slides.pdf)
 
+# Prerequisites
+
+Before running this application, ensure you have the required software installed:
+
+- **Java 21** (LTS) - Required (Eclipse Temurin recommended)
+- **Gradle** - Included via wrapper (no manual installation needed)
+- **Docker & Docker Compose** - Optional but recommended for Redis and Ollama
+- **Git** - For cloning the repository
+
+📋 **[See detailed installation instructions →](docs/PREREQUISITES.md)**
+
+Quick verification:
+```bash
+java -version          # Should show version 21
+./gradlew --version    # Will download Gradle 8.8 automatically
+docker --version       # Optional, for Redis/Ollama
+```
+
 # Setup
 ## LLM
 ### Local LLM (Ollama)
