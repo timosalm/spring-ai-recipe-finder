@@ -58,7 +58,24 @@ class RecipeResource {
             return ResponseEntity.noContent().build();
         } catch (IllegalArgumentException e) {
             log.warn("Invalid file upload request: {}", e.getMessage());
-            return ResponseEntity.badRequest().body(e.getMessage());
+            // Map validation errors to safe user-friendly messages to prevent information disclosure
+            String errorMsg = e.getMessage();
+            String responseMessage = "Invalid file upload request";
+            
+            if (errorMsg != null) {
+                if (errorMsg.contains("File cannot be empty")) {
+                    responseMessage = "File cannot be empty";
+                } else if (errorMsg.contains("File too large")) {
+                    responseMessage = "File size exceeds maximum allowed (100MB)";
+                } else if (errorMsg.contains("Invalid file type") || errorMsg.contains("Only PDF files")) {
+                    responseMessage = "Only PDF files are allowed";
+                } else if (errorMsg.contains("Filename is required")) {
+                    responseMessage = "Filename is required";
+                } else if (errorMsg.contains("page") && errorMsg.contains("margin")) {
+                    responseMessage = "Invalid page margin value";
+                }
+            }
+            return ResponseEntity.badRequest().body(responseMessage);
         } catch (Exception e) {
             log.error("Error processing file upload", e);
             return ResponseEntity.internalServerError().body("Error processing file upload");

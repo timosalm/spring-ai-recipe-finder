@@ -1,0 +1,39 @@
+spring:
+  application.name: RecipeFinderTest
+  ai:
+    model:
+      chat: ollama
+      embedding: ollama
+      image: none
+      audio:
+        speech: none
+        transcription: none
+      moderation: none
+    ollama:
+      chat:
+        model: llama3.2
+        options.temperature: 0.5
+      embedding.model: llama3.2
+    vectorstore:
+      redis:
+        initialize-schema: false
+
+# Disable Redis for tests
+spring.data.redis:
+  host: localhost
+  port: 6379
+  
+# Use in-memory vector store for tests
+spring.ai.vectorstore.simple.enabled: true
+
+app:
+  available-ingredients-in-fridge: bacon,onions
+  rate-limit:
+    recipe-generation:
+      capacity: 10
+      refill-rate: 10
+      refill-duration-minutes: 1
+    file-upload:
+      capacity: 5
+      refill-rate: 5
+      refill-duration-minutes: 60
