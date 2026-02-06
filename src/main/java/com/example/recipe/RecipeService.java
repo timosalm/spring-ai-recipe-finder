@@ -132,13 +132,19 @@ class RecipeService {
         var ragSearchRequest = SearchRequest.builder().topK(2).similarityThreshold(0.7).build();
         var ragAdvisor = QuestionAnswerAdvisor.builder(vectorStore).searchRequest(ragSearchRequest).promptTemplate(ragPromptTemplate).build();
 
-        var safeGuardAdvisor = new SafeGuardAdvisor(List.of("dump"));
+        // SafeGuardAdvisor to prevent prompt injection with comprehensive keyword list
+        var safeGuardAdvisor = new SafeGuardAdvisor(List.of(
+                "ignore", "disregard", "forget", "bypass", "override",
+                "system", "admin", "root", "sudo", "execute", "eval",
+                "inject", "script", "command", "shell", "hack",
+                "dump", "reveal", "show", "display", "print"
+        ));
          return chatClient.prompt()
                  .user(us -> us
                         .text(recipeForAvailableIngredientsPromptResource)
                         .param("ingredients", String.join(",", ingredients)))
-                 // Registers the advisor implementing RAG for chat model interaction
-                 .advisors(ragAdvisor)
+                 // Registers the advisors for chat model interaction
+                 .advisors(safeGuardAdvisor, ragAdvisor)
                  .call()
                  .entity(Recipe.class);
     }
@@ -149,12 +155,20 @@ class RecipeService {
         var ragSearchRequest = SearchRequest.builder().topK(2).similarityThreshold(0.7).build();
         var ragAdvisor = QuestionAnswerAdvisor.builder(vectorStore).searchRequest(ragSearchRequest).promptTemplate(ragPromptTemplate).build();
 
+        // SafeGuardAdvisor to prevent prompt injection
+        var safeGuardAdvisor = new SafeGuardAdvisor(List.of(
+                "ignore", "disregard", "forget", "bypass", "override",
+                "system", "admin", "root", "sudo", "execute", "eval",
+                "inject", "script", "command", "shell", "hack",
+                "dump", "reveal", "show", "display", "print"
+        ));
+
         return chatClient.prompt()
                 .user(us -> us
                         .text(recipeForAvailableIngredientsPromptResource)
                         .param("ingredients", String.join(",", ingredients)))
                 .tools(this)
-                .advisors(ragAdvisor)
+                .advisors(safeGuardAdvisor, ragAdvisor)
                 .call()
                 .entity(Recipe.class);
     }
