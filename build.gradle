@@ -35,6 +35,7 @@ dependencies {
 	implementation 'org.springframework.ai:spring-ai-pdf-document-reader'
 
 	implementation 'org.apache.commons:commons-lang3'
+	implementation 'com.bucket4j:bucket4j-core:8.10.1'
 
 	developmentOnly 'org.springframework.boot:spring-boot-docker-compose'
 	developmentOnly 'org.springframework.ai:spring-ai-spring-boot-docker-compose'

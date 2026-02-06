@@ -42,3 +42,13 @@ spring.data.redis:
 
 app:
   available-ingredients-in-fridge: bacon,onions
+  # Rate limiting configuration to prevent abuse
+  rate-limit:
+    recipe-generation:
+      capacity: 10
+      refill-rate: 10
+      refill-duration-minutes: 1
+    file-upload:
+      capacity: 5
+      refill-rate: 5
+      refill-duration-minutes: 60

@@ -1,5 +1,8 @@
 package com.example.recipe;
 
+import io.github.bucket4j.Bucket;
+import io.github.bucket4j.ConsumptionProbe;
+import jakarta.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,11 +29,16 @@ class RecipeUiController {
     private final RecipeService recipeService;
     private final ChatModel chatModel;
     private final Optional<ImageModel> imageModel;
+    private final InputValidator inputValidator;
+    private final RateLimitingConfig rateLimitingConfig;
 
-    RecipeUiController(RecipeService recipeService, ChatModel chatModel, Optional<ImageModel> imageModel) {
+    RecipeUiController(RecipeService recipeService, ChatModel chatModel, Optional<ImageModel> imageModel,
+                      InputValidator inputValidator, RateLimitingConfig rateLimitingConfig) {
         this.recipeService = recipeService;
         this.chatModel = chatModel;
         this.imageModel = imageModel;
+        this.inputValidator = inputValidator;
+        this.rateLimitingConfig = rateLimitingConfig;
     }
 
     @GetMapping
@@ -44,17 +52,55 @@ class RecipeUiController {
     }
 
     @PostMapping
-    String fetchRecipeUiFor(FetchRecipeData fetchRecipeData, Model model) throws Exception {
-        Recipe recipe;
+    String fetchRecipeUiFor(FetchRecipeData fetchRecipeData, Model model, HttpServletRequest request) throws Exception {
         try {
-            recipe = recipeService.fetchRecipeFor(fetchRecipeData.ingredients(), fetchRecipeData.isPreferAvailableIngredients(), fetchRecipeData.isPreferOwnRecipes());
+            // Rate limiting check
+            String clientKey = getClientKey(request);
+            Bucket bucket = rateLimitingConfig.resolveRecipeGenerationBucket(clientKey);
+            ConsumptionProbe probe = bucket.tryConsumeAndReturnRemaining(1);
+            
+            if (!probe.isConsumed()) {
+                long waitForRefill = probe.getNanosToWaitForRefill() / 1_000_000_000;
+                log.warn("Rate limit exceeded for recipe generation from client: {}", clientKey);
+                model.addAttribute("error", "Too many requests. Please wait " + waitForRefill + " seconds before trying again.");
+                return fetchUI(model);
+            }
+
+            // Input validation
+            inputValidator.validateIngredients(fetchRecipeData.ingredients());
+
+            // Process the recipe request
+            Recipe recipe;
+            try {
+                recipe = recipeService.fetchRecipeFor(fetchRecipeData.ingredients(), fetchRecipeData.isPreferAvailableIngredients(), fetchRecipeData.isPreferOwnRecipes());
+            } catch (Exception e) {
+                log.info("Retry RecipeUiController:fetchRecipeFor after exception caused by LLM");
+                recipe = recipeService.fetchRecipeFor(fetchRecipeData.ingredients(), fetchRecipeData.isPreferAvailableIngredients(), fetchRecipeData.isPreferOwnRecipes());
+            }
+            
+            model.addAttribute("recipe", recipe);
+            model.addAttribute("fetchRecipeData", fetchRecipeData);
+            log.info("Recipe generated successfully for client: {}", clientKey);
+        } catch (IllegalArgumentException e) {
+            log.warn("Invalid recipe request: {}", e.getMessage());
+            model.addAttribute("error", e.getMessage());
         } catch (Exception e) {
-            log.info("Retry RecipeUiController:fetchRecipeFor after exception caused by LLM");
-            recipe = recipeService.fetchRecipeFor(fetchRecipeData.ingredients(), fetchRecipeData.isPreferAvailableIngredients(), fetchRecipeData.isPreferOwnRecipes());
+            log.error("Error generating recipe", e);
+            model.addAttribute("error", "An error occurred while generating the recipe. Please try again.");
         }
-        model.addAttribute("recipe", recipe);
-        model.addAttribute("fetchRecipeData", fetchRecipeData);
+        
         return fetchUI(model);
+    }
+
+    /**
+     * Extracts a client identifier for rate limiting (IP address).
+     */
+    private String getClientKey(HttpServletRequest request) {
+        String xff = request.getHeader("X-Forwarded-For");
+        if (xff != null && !xff.isEmpty()) {
+            return xff.split(",")[0].trim();
+        }
+        return request.getRemoteAddr();
     }
 
     private List<String> getAiModelNames() {

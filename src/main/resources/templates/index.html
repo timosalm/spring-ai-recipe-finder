@@ -24,6 +24,9 @@
                 <label for="prefer-own-recipes">Prefer own recipes</label>
                 <button type="submit">Find</button>
             </form>
+            <div class="error-message" th:if="${error != null}" style="color: red; background-color: #ffe6e6; padding: 10px; border-radius: 5px; margin: 10px 0;">
+                <strong>Error:</strong> <span th:text="${error}">Error message</span>
+            </div>
             <div class="content" th:if="${recipe != null}">
                 <div class="text">
                     <h2 th:text="${recipe.name}">Recipe Name</h2>

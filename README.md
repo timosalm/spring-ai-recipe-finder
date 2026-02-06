@@ -3,11 +3,31 @@
 Demo on how easy it is to build AI-driven applications with Spring Boot and Spring AI. 
 It also shows how to implement advanced techniques for the adaption of foundation models with Function Calling and RAG.
 
+**Security Notice**: This application now includes comprehensive security safeguards to prevent prompt injection attacks and abuse. See [Security Documentation](docs/SECURITY.md) for details.
+
 ***Note: A Spring AI Recipe Finder implementation using the Model Context Protocol is available [here](https://github.com/timosalm/spring-ai-recipe-finder-mcp).***
 
 ![](docs/images/ui-sample.png)
 
 [Slides: Building AI-Driven Spring Applications with Spring AI](docs/slides.pdf)
+
+# Prerequisites
+
+Before running this application, ensure you have the required software installed:
+
+- **Java 21** (LTS) - Required (Eclipse Temurin recommended)
+- **Gradle** - Included via wrapper (no manual installation needed)
+- **Docker & Docker Compose** - Optional but recommended for Redis and Ollama
+- **Git** - For cloning the repository
+
+📋 **[See detailed installation instructions →](docs/PREREQUISITES.md)**
+
+Quick verification:
+```bash
+java -version          # Should show version 21
+./gradlew --version    # Will download Gradle 8.8 automatically
+docker --version       # Optional, for Redis/Ollama
+```
 
 # Setup
 ## LLM
@@ -82,6 +102,18 @@ curl -XPOST -F "file=@$PWD/german_recipes.pdf" -F "pageBottomMargin=50" http://l
 ```
 Based on the sample recipes part of this repository, with the input "Cheese", you should get a recipe that goes in the direction of a cheese spaetzle muffin.
 ![](docs/images/ui-sample-rag.png)
+
+# Security Features
+
+This application implements comprehensive security measures to protect against prompt injection attacks and abuse:
+
+- **Input Validation**: All user inputs are validated and sanitized before processing
+- **Rate Limiting**: API endpoints are protected with configurable rate limits (10 requests/min for recipes, 5 requests/hour for uploads)
+- **Prompt Engineering**: System instructions are isolated from user input to prevent injection
+- **Content Filtering**: Malicious keywords are blocked using SafeGuardAdvisor
+- **File Validation**: Strict validation for uploaded recipe documents
+
+For complete security documentation, configuration options, and best practices, see [docs/SECURITY.md](docs/SECURITY.md).
 
 # Kubernetes Deployment
 
