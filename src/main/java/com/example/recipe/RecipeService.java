@@ -85,8 +85,9 @@ class RecipeService {
                     .variables(Map.of("recipe", recipe.name()))
                     .build();
             var imagePrompt = new ImagePrompt(imagePromptTemplate.render());
-            var imageGeneration = imageModel.get().call(imagePrompt).getResult();
-            return new Recipe(recipe, imageGeneration.getOutput().getUrl());
+            var image = imageModel.get().call(imagePrompt).getResult().getOutput();
+            var imageUrl = image.getUrl() != null ? image.getUrl() : "data:image/png;base64," + image.getB64Json();
+            return new Recipe(recipe, imageUrl);
         }
         return recipe;
     }
