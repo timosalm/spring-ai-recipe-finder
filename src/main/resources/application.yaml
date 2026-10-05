@@ -1,21 +1,17 @@
 spring:
   application.name: RecipeFinder
   ai:
-    # Define AI provider(s) for type of models for autoconfiguration
-    model:
-      chat: ollama
-      embedding: ollama
-      image: none
-      audio:
-        speech: none
-        transcription: none
-      moderation: none
     # AI provider configuration
-    ollama:
+    openai:
       chat:
-        model: llama3.2
-        options.temperature: 0.5
-      embedding.model: llama3.2
+        model: gpt-6-sol
+        reasoning-effort: none
+        temperature: 1.0
+      image:
+        model: gpt-image-2.5-flare
+        size: 1024x1024
+      api-key: ${OPENAI_API_KEY}
+
     vectorstore.redis.initialize-schema: true
 
     # Logging
@@ -35,6 +31,8 @@ server.tomcat.max-swallow-size: -1
 
 # VectorStore configuration
 spring.data.redis:
+  # Spring AI's Redis vector store requires Jedis, but Lettuce is also on the classpath and preferred by default
+  client-type: jedis
   host: localhost
   port: 6379
   username:
